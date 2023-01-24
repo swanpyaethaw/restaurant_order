@@ -33,6 +33,15 @@ class LoginController extends Controller
             return redirect('admin/dashboard');
         }
 
+        if(Auth::user()->role_id == 2){
+            return redirect('kitchen/orders');
+        }
+
+        if(Auth::user()->role_id == 3){
+            return redirect('cashier/orders');
+        }
+
+
         if(Auth::user()->role_id == 4){
             return redirect('waiter/dashboard');
         }

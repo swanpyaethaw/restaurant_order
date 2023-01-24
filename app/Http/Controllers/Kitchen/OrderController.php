@@ -29,6 +29,24 @@ class OrderController extends Controller
         $orderDetail->update([
             'status' => 'cancel'
         ]);
+
+        // $order = Order::where('id',$orderDetail->order_id)->first();
+        // $orderDetails = $order->orderDetails()->where('order_id',$order->id)->get();
+        // $orderStatus = "";
+
+        // foreach($orderDetails as $orderItem){
+        //     if($orderItem->status == 'cancel'){
+        //         $orderStatus = true;
+        //     }else{
+        //         $orderStatus = false;
+        //         break;
+        //     }
+        // }
+
+        // if($orderStatus == true){
+        //     $order->order_status = 'cancel';
+        //     $order->save();
+        // }
         return redirect()->back();
     }
 

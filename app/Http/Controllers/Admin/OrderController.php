@@ -17,7 +17,7 @@ class OrderController extends Controller
                     },function($q) use($today){
                         return $q->whereDate('created_at',$today);
                     })
-                  ->paginate(1);
+                  ->paginate(10);
         return view('admin.orders.index',compact('orders'));
     }
 
@@ -25,5 +25,20 @@ class OrderController extends Controller
         $orderDetails = OrderDetail::where('order_id',$orderId)->get();
         return view('admin.orders.detail',compact('orderDetails'));
     }
+
+    public function complete($orderId){
+        $order = Order::findOrFail($orderId);
+        $order->order_status = 'completed';
+        $order->save();
+        return back();
+    }
+
+    public function cancel($orderId){
+        $order = Order::findOrFail($orderId);
+        $order->order_status = 'cancel';
+        $order->save();
+        return back();
+    }
+
 
 }

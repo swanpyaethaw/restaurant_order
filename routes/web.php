@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReceipeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Kitchen\OrderController as KitchenOrderController;
+use App\Http\Controllers\Cashier\OrderController as CashierOrderController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Waiter\DashboardController as WaiterDashboardController;
 use App\Http\Controllers\Waiter\OrderController as WaiterOrderController;
@@ -29,6 +30,7 @@ Route::get('/', function () {
 });
 
 // All Users Routes
+
 Route::prefix('users')->middleware(['auth'])->group(function(){
     Route::get('/profile',[UserProfileController::class,'index']);
     Route::post('/profile',[UserProfileController::class,'saveProfile']);
@@ -38,6 +40,7 @@ Route::prefix('users')->middleware(['auth'])->group(function(){
 });
 
 // Admin Routes
+
 Route::prefix('admin')->middleware(['auth','isAdmin'])->group(function(){
     Route::get('/dashboard',[DashboardController::class,'index']);
     Route::resource('categories', CategoryController::class);
@@ -47,10 +50,14 @@ Route::prefix('admin')->middleware(['auth','isAdmin'])->group(function(){
     Route::get('/categories/{category}/deleteCategoryImage',[CategoryController::class,'deleteCategoryImage']);
     Route::get('/tables',Index::class);
     Route::get('/orders',[OrderController::class,'index']);
-    Route::get('/order-details/{order_id}',[OrderController::class,'detail']);
+    Route::get('/orders/{order}',[OrderController::class,'detail']);
+    Route::get('/orders/{order}/complete',[OrderController::class,'complete']);
+    Route::get('/orders/{order}/cancel',[OrderController::class,'cancel']);
+
 });
 
 // Waiter Routes
+
 Route::prefix('waiter')->middleware(['auth','isWaiter'])->group(function(){
     Route::get('/dashboard',[WaiterDashboardController::class,'index']);
     Route::post('orderSubmit',[WaiterDashboardController::class,'saveOrder']);
@@ -59,14 +66,24 @@ Route::prefix('waiter')->middleware(['auth','isWaiter'])->group(function(){
 });
 
 // Kitchen Routes
-Route::prefix('kitchen')->middleware(['auth'])->group(function(){
+
+Route::prefix('kitchen')->middleware(['auth','isChef'])->group(function(){
     Route::get('/orders',[KitchenOrderController::class,'index']);
     Route::get('/pending/{order_item}',[KitchenOrderController::class,'pending']);
     Route::get('/cancel/{order_item}',[KitchenOrderController::class,'cancel']);
     Route::get('/ready/{order_item}',[KitchenOrderController::class,'ready']);
 });
 
+// Cashier Routes
 
-Auth::routes(['register' => false]);
+Route::prefix('cashier')->middleware(['auth','isCashier'])->group(function(){
+    Route::get('/orders',[CashierOrderController::class,'index']);
+    Route::get('/order-details/{order}',[CashierOrderController::class,'detail']);
+    Route::get('/invoice/{order}',[CashierOrderController::class,'viewInvoice']);
+    Route::get('/invoice/{order}/generate',[CashierOrderController::class,'generateInvoice']);
+});
+
+
+Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

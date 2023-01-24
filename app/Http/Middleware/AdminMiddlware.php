@@ -20,6 +20,14 @@ class AdminMiddlware
         if(Auth::user()->role_id == 1){
             return $next($request);
         }
-        return redirect('waiter/dashboard')->with('message','Cannot access as you are not admin');
+        if(Auth::user()->role_id == 2){
+            return redirect('kitchen/orders')->with('message','Cannot access as you are not admin');
+        }
+        if(Auth::user()->role_id == 3){
+            return redirect('cashier/orders')->with('message','Cannot access as you are not admin');
+        }
+        if(Auth::user()->role_id == 4){
+            return redirect('waiter/dashboard')->with('message','Cannot access as you are not admin');
+        }
     }
 }
